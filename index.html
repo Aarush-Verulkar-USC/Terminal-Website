@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aarush Verulkar</title>
+    <link rel="icon" href="images/tab.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+        
+        :root {
+            --bg-color: #1a1a1a;
+            --terminal-header: #282828;
+            --text-primary: #f8f8f2;
+            --text-secondary: #8F8F8F;
+            --accent-color: #04a5e5;
+            --accent-secondary: #bd93f9;
+            --cursor-color: #ffffff;
+            
+            --font-mono: 'Geist Mono', monospace;
+            --transition: all 0.2s ease-in-out;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .terminal {
+            width: 90%;
+            max-width: 850px;
+            height: 90vh;
+            margin: 5vh auto;
+            background-color: var(--bg-color);
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminal-header {
+            height: 28px;
+            background-color: var(--terminal-header);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .control.red {
+            background-color: #ff5f56;
+        }
+        
+        .control.yellow {
+            background-color: #ffbd2e;
+        }
+        
+        .control.green {
+            background-color: #27c93f;
+        }
+        
+        .terminal-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        
+        .terminal-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            font-size: 13px;
+        }
+        
+        .terminal-content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .prompt {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .prompt-sign {
+            color: var(--accent-color);
+            margin-right: 8px;
+            font-weight: 500;
+        }
+        
+        .prompt-user {
+            color: var(--accent-secondary);
+            margin-right: 5px;
+        }
+        
+        .prompt-path {
+            color: var(--text-secondary);
+            margin-right: 8px;
+        }
+        
+        .prompt-command {
+            color: var(--text-primary);
+        }
+        
+        .response {
+            margin-left: 0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .response p {
+            margin-bottom: 10px;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--cursor-color);
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+            margin-top: -2px;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .highlight {
+            color: var(--accent-color);
+        }
+        
+        .section {
+            margin-bottom: 10px;
+        }
+        
+        .section-title {
+            color: var(--accent-secondary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .skill-item {
+            background-color: rgba(254, 100, 11, 0.1);
+            border-radius: 3px;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .link {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-color);
+            padding-bottom: 1px;
+            transition: var(--transition);
+        }
+        
+        .link:hover {
+            color: var(--accent-secondary);
+            border-bottom-color: var(--accent-secondary);
+        }
+        
+        .typing {
+            animation: typing 3.5s steps(40, end);
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        /* Navigation links */
+        .nav-links {
+            display: flex;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-item {
+            margin-right: 15px;
+        }
+        
+        .nav-link {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-secondary);
+            padding-bottom: 1px;
+            transition: var(--transition);
+            font-size: 12px;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+        
+        /* Active command */
+        .active-command {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        /* Media queries */
+        @media (max-width: 768px) {
+            .terminal {
+                width: 95%;
+                height: 95vh;
+                margin: 2.5vh auto;
+            }
+            
+            .terminal-content {
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .terminal-header {
+                height: 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .terminal {
+                width: 100%;
+                height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .terminal-content {
+                padding: 8px;
+                font-size: 11px;
+            }
+            
+            .terminal-header {
+                height: 22px;
+            }
+            
+            .control {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="window-controls">
+                <div class="control red"></div>
+                <div class="control yellow"></div>
+                <div class="control green"></div>
+            </div>
+            <div class="terminal-title">bash -- 80x24</div>
+        </div>
+        <div class="terminal-content">
+            <div class="prompt">
+                <span class="prompt-sign">$</span>
+                <span class="prompt-user">user@portfolio</span>
+                <span class="prompt-path">:~$</span>
+                <span class="prompt-command">whoami</span>
+            </div>
+            <div class="response">
+                <p>aarush verulkar</p>
+                <p>computer science graduate student @ usc</p>
+                <p>currently seeking summer 2025 internships</p>
+            </div>
+            
+            <div class="prompt">
+                <span class="prompt-sign">$</span>
+                <span class="prompt-user">user@portfolio</span>
+                <span class="prompt-path">:~$</span>
+                <span class="prompt-command">help</span>
+            </div>
+            <div class="response">
+                <p>available commands:</p>
+                <p><span class="highlight">about</span> - display information about me</p>
+                <p><span class="highlight">skills</span> - list my technical skills</p>
+                <p><span class="highlight">projects</span> - view my projects</p>
+                <p><span class="highlight">research</span> - explore my research work</p>
+                <p><span class="highlight">resume</span> - download my resume</p>
+                <p><span class="highlight">contact</span> - get my contact information</p>
+                <p><span class="highlight">clear</span> - clear the terminal</p>
+                <p><span class="highlight">help</span> - display this help message</p>
+            </div>
+            
+            <div id="command-history">
+                <!-- Command history will be dynamically populated here -->
+            </div>
+            
+            <div class="active-command">
+                <span class="prompt-sign">$</span>
+                <span class="prompt-user">user@portfolio</span>
+                <span class="prompt-path">:~$</span>
+                <span id="current-command" class="prompt-command"></span>
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalContent = document.querySelector('.terminal-content');
+            const commandHistory = document.getElementById('command-history');
+            const currentCommand = document.getElementById('current-command');
+            let commandBuffer = '';
+            
+            // Content templates for commands
+            const contentTemplates = {
+                about: `
+                    <div class="response">
+                        <p>Hello! I'm <span class="highlight">Aarush Verulkar</span>, a Computer Science graduate student at the University of Southern California. My interests include software engineering, machine learning, and data science.</p>
+                        <p>I'm passionate about creating elegant solutions to complex problems and continuously expanding my technical knowledge.</p>
+                    </div>
+                `,
+                skills: `
+                    <div class="response">
+                        <div class="section">
+                            <div class="section-title">// programming languages</div>
+                            <div class="skills-list">
+                                <span class="skill-item">Python</span>
+                                <span class="skill-item">Java</span>
+                                <span class="skill-item">JavaScript</span>
+                                <span class="skill-item">HTML</span>
+                                <span class="skill-item">CSS</span>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// frameworks & libraries</div>
+                            <div class="skills-list">
+                                <span class="skill-item">ReactJS</span>
+                                <span class="skill-item">Django</span>
+                                <span class="skill-item">PyTorch</span>
+                                <span class="skill-item">TensorFlow</span>
+                                <span class="skill-item">Keras</span>
+                                <span class="skill-item">NumPy</span>
+                                <span class="skill-item">Pandas</span>
+                                <span class="skill-item">Matplotlib</span>
+                                <span class="skill-item">Scikit-Learn</span>
+                                <span class="skill-item">SciPy</span>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// databases</div>
+                            <div class="skills-list">
+                                <span class="skill-item">MongoDB</span>
+                                <span class="skill-item">PostgreSQL</span>
+                                <span class="skill-item">MySQL</span>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// devops & tools</div>
+                            <div class="skills-list">
+                                <span class="skill-item">Git</span>
+                                <span class="skill-item">AWS</span>
+                                <span class="skill-item">Docker</span>
+                                <span class="skill-item">Hadoop</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                projects: `
+                    <div class="response">
+                        <div class="section">
+                            <div class="section-title">// projects</div>
+                            <p>Here is a collection of some of my recent projects. Each project showcases the skills and technologies I've applied to solve real-world problems.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// intellihealth</div>
+                            <p><span class="highlight">A decentralized electronic health record system leveraging blockchain.</span></p>
+                            <p><a href="https://github.com/Aarush-Verulkar-USC/Intellihealth" class="link">github.com/Aarush-Verulkar-USC/Intellihealth</a></p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// deep learning based conveyor belt object detection system</div>
+                            <p><span class="highlight">Achieved 95% accuracy in real-time classification.</span></p>
+                            <p><a href="https://github.com/Aarush-Verulkar-USC/Deep-Learning-Based-Conveyor-Belt-System" class="link">github.com/Aarush-Verulkar-USC/Deep-Learning-Based-Conveyor-Belt-System</a></p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// cross-domain continual learning</div>
+                            <p><span class="highlight">Comparative analysis of EWC, GEM, and Experience Replay.</span></p>
+                            <p><a href="https://github.com/Aarush-Verulkar-USC/Continual-Learning" class="link">github.com/Aarush-Verulkar-USC/Continual-Learning</a></p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// to do list</div>
+                            <p><span class="highlight">A simple CRUD-based React project with theme switcher.</span></p>
+                            <p><a href="https://github.com/Aarush-Verulkar-USC/To-Do-List" class="link">github.com/Aarush-Verulkar-USC/To-Do-List</a></p>
+                        </div>
+                    </div>
+                `,
+                research: `
+                    <div class="response">
+                        <div class="section">
+                            <div class="section-title">// research</div>
+                            <p>Welcome to my research page! Here, I share my ongoing work, publications, and ideas for future exploration.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// publications</div>
+                            <p><span class="highlight">Intellihealth</span></p>
+                            <p>A Secured Decentralized Electronic Health Record System using Blockchain.</p>
+                            <p>Published in: IEEE ICBDS 2024</p>
+                            <p><a href="https://ieeexplore.ieee.org/document/10837083" class="link">ieeexplore.ieee.org/document/10837083</a></p>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">// future work</div>
+                            <p>Stay Tuned.</p>
+                        </div>
+                    </div>
+                `,
+                resume: `
+                    <div class="response">
+                        <p>For a complete overview of my education, experience, and projects, check out my full resume:</p>
+                        <p><a href="docs/resume.pdf" class="link">resume.pdf</a></p>
+                    </div>
+                `,
+                contact: `
+                    <div class="response">
+                        <p>Take a look at some recent work, or feel free to get in touch.</p>
+                        <div class="section">
+                            <div class="section-title">// contact channels</div>
+                            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:verulkar@usc.edu" class="link">verulkar@usc.edu</a></p>
+                            <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://linkedin.com/in/aarush-verulkar" class="link">linkedin.com/in/aarush-verulkar</a></p>
+                            <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/aarush-verulkar-usc" class="link">github.com/aarush-verulkar-usc</a></p>
+                        </div>
+                    </div>
+                `,
+                help: `
+                    <div class="response">
+                        <p>available commands:</p>
+                        <p><span class="highlight">about</span> - display information about me</p>
+                        <p><span class="highlight">skills</span> - list my technical skills</p>
+                        <p><span class="highlight">projects</span> - view my projects</p>
+                        <p><span class="highlight">research</span> - explore my research work</p>
+                        <p><span class="highlight">resume</span> - download my resume</p>
+                        <p><span class="highlight">contact</span> - get my contact information</p>
+                        <p><span class="highlight">clear</span> - clear the terminal</p>
+                        <p><span class="highlight">help</span> - display this help message</p>
+                    </div>
+                `
+            };
+            
+            // Handle keyboard input
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    // Execute command
+                    const command = commandBuffer.trim().toLowerCase();
+                    executeCommand(command);
+                    commandBuffer = '';
+                    currentCommand.textContent = '';
+                } else if (e.key === 'Backspace') {
+                    // Delete last character
+                    commandBuffer = commandBuffer.slice(0, -1);
+                    currentCommand.textContent = commandBuffer;
+                } else if (e.key.length === 1) {
+                    // Add character to buffer
+                    commandBuffer += e.key;
+                    currentCommand.textContent = commandBuffer;
+                }
+            });
+            
+            // Focus on terminal when clicking anywhere
+            document.addEventListener('click', function() {
+                // Scroll to bottom
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            });
+            
+            // Function to execute commands
+            function executeCommand(command) {
+                // Create command prompt element
+                const promptElement = document.createElement('div');
+                promptElement.className = 'prompt';
+                promptElement.innerHTML = `
+                    <span class="prompt-sign">$</span>
+                    <span class="prompt-user">user@portfolio</span>
+                    <span class="prompt-path">:~$</span>
+                    <span class="prompt-command">${command}</span>
+                `;
+                commandHistory.appendChild(promptElement);
+                
+                // Process command
+                if (command === 'clear') {
+                    // Clear terminal
+                    commandHistory.innerHTML = '';
+                } else if (contentTemplates[command]) {
+                    // Display content for valid command
+                    const responseDiv = document.createElement('div');
+                    responseDiv.innerHTML = contentTemplates[command];
+                    commandHistory.appendChild(responseDiv.firstElementChild);
+                } else if (command === '') {
+                    // Empty command, do nothing
+                } else {
+                    // Unknown command
+                    const responseDiv = document.createElement('div');
+                    responseDiv.className = 'response';
+                    responseDiv.innerHTML = `<p>command not found: ${command}. Type <span class="highlight">help</span> for available commands.</p>`;
+                    commandHistory.appendChild(responseDiv);
+                }
+                
+                // Scroll to bottom
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }
+            
+            // Initial focus on terminal
+            terminalContent.scrollTop = terminalContent.scrollHeight;
+        });
+    </script>
+</body>
+</html>
